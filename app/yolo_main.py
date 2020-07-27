@@ -188,10 +188,11 @@ def MaskDetector(bboxes, image, tolerance):
 
 def main():
 
-  # Here we can define a single image for test purposes, if you want to check it, you can uncomment below
+	# Here we can define a single image for test purposes, if you want to check it, you can uncomment below
   #image = cv2.imread('/content/drive/My Drive/Colab_Notebooks/test.jpg')
   urlden = 'https://a-team-mall-api.herokuapp.com/density'
   urlmask = 'https://a-team-mall-api.herokuapp.com/mask'
+  urlvio = 'https://a-team-mall-api.herokuapp.com/violations'
   while True:
     # Here I provided a link from https://www.insecam.org/, which is a good spot from Colorado, USA
     cap = cv2.VideoCapture('http://14.34.45.49:5000/webcapture.jpg?command=snap&channel=1?1595819773#.Xx5CgNgoHtk.link')
@@ -210,6 +211,10 @@ def main():
                         'mask': 0,
                         'nomask': 0
                          }
+        violationstreaming = {"x": 70, 
+                            "y": 20, 
+                            "count": 0
+                              }
     else:
       facecountnumber = facecount.shape[0]
       facecountstreaming = {"x": 70, 
@@ -223,9 +228,14 @@ def main():
                        'mask': maskamount[0],
                        'nomask': maskamount[1]
                        }
+      violationstreaming = {"x": 70, 
+                           "y": 20, 
+                           "count": violation
+                          }
     # Here I am just trying to check whether I can post the data to our app
     gg = requests.post(urlden, json = facecountstreaming)
     zz = requests.post(urlmask, json = maskstreaming)
+    yy = requests.post(urlvio, json = violationstreaming)
     # print(gg.status_code)
     #if zz.status_code == requests.codes.ok:
     #  print('Mask Uploaded')
